@@ -37,10 +37,28 @@ with st.sidebar:
     
     # File upload section
     st.subheader("📤 Import des données")
-    uploaded_file = st.file_uploader("Importer un fichier CSV", type="csv")
+    upload_method = st.radio("Méthode d'import", ["Fichier local", "URL"])
+    
+    if upload_method == "Fichier local":
+        uploaded_file = st.file_uploader("Importer un fichier CSV", type="csv")
+        if uploaded_file is not None:
+            df = pd.read_csv(uploaded_file)
+    else:
+        url = st.text_input("URL du fichier CSV")
+        if url:
+            try:
+                uploaded_file = pd.read_csv(url)
+                print(uploaded_file)
+                if uploaded_file is not None:
+                    df = uploaded_file
+                st.success("✅ Fichier CSV téléchargé avec succès depuis l'URL!")
+            except Exception as e:
+                st.error(f"❌ Erreur lors du téléchargement: {str(e)}")
+                uploaded_file = None
+        else:
+            uploaded_file = None
     
     if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
         if st.button("📥 Charger dans la base", type="primary"):
             # Define expected columns for each table
             table_columns = {
