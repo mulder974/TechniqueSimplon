@@ -60,7 +60,7 @@ with st.sidebar:
                 st.error("❌ Le format du fichier ne correspond à aucune table")
             else:
                 data_json = df.to_dict(orient='records')
-                response = requests.post("http://127.0.0.1:5000/upload-csv",
+                response = requests.post("https://techniquessimplon2-production.up.railway.app//upload-csv",
                                       json={"data": data_json, "table_name": table_name})
             if response.status_code == 200:
                 st.success("✅ Données importées avec succès!")
@@ -86,13 +86,13 @@ col1, col2, col3 = st.columns(3)
 # Total revenue/volume
 with col1:
     if filter_option == "Volume":
-        response = requests.get("http://127.0.0.1:5000/sellsbyshop")
+        response = requests.get("https://techniquessimplon2-production.up.railway.app//sellsbyshop")
         data = response.json()
         df_sells_by_shop = pd.DataFrame(data, columns=["town", "shop_id", "total_quantity"])
         total = df_sells_by_shop["total_quantity"].sum()
         st.metric("📦 Volume Total", f"{total:,.0f} unités")
     else:
-        response = requests.get("http://127.0.0.1:5000/sellsvaluebyshop")
+        response = requests.get("https://techniquessimplon2-production.up.railway.app//sellsvaluebyshop")
         data = response.json()
         df_sells_value_by_shop = pd.DataFrame(data, columns=["town", "shop_id", "total_value"])
         df_sells_value_by_shop['total_value'] = pd.to_numeric(df_sells_value_by_shop['total_value'], errors='coerce')
@@ -104,7 +104,7 @@ tab1, tab2, tab3 = st.tabs(["📊 Analyse par Produit", "🏪 Analyse par Magasi
 
 with tab1:
     if filter_option == "Volume":
-        response = requests.get("http://127.0.0.1:5000/sellsbyproduct")
+        response = requests.get("https://techniquessimplon2-production.up.railway.app//sellsbyproduct")
         data = response.json()
         df_sells_by_product = pd.DataFrame(data, columns=["product_reference", "total_quantity"])
         
@@ -118,7 +118,7 @@ with tab1:
             st.dataframe(df_sells_by_product.style.highlight_max(["total_quantity"]), 
                         use_container_width=True)
     else:
-        response = requests.get("http://127.0.0.1:5000/sellsvaluebyproduct")
+        response = requests.get("https://techniquessimplon2-production.up.railway.app//sellsvaluebyproduct")
         data = response.json()
         df_sells_value_by_product = pd.DataFrame(data, columns=["product_reference", "total_value"])
         df_sells_value_by_product['total_value'] = pd.to_numeric(df_sells_value_by_product['total_value'], 
@@ -136,7 +136,7 @@ with tab1:
 
 with tab2:
     if filter_option == "Volume":
-        response = requests.get("http://127.0.0.1:5000/sellsbyshopbyproduct")
+        response = requests.get("https://techniquessimplon2-production.up.railway.app//sellsbyshopbyproduct")
         data = response.json()
         df = pd.DataFrame(data, columns=["town", "shop_id", "product_reference", "total_quantity"])
         
@@ -154,7 +154,7 @@ with tab2:
                     st.metric("Volume Total", f"{total:,.0f} unités")
                     st.dataframe(town_data, use_container_width=True)
     else:
-        response = requests.get("http://127.0.0.1:5000/sellsvaluebyshopbyproduct")
+        response = requests.get("https://techniquessimplon2-production.up.railway.app//sellsvaluebyshopbyproduct")
         data = response.json()
         df = pd.DataFrame(data, columns=["town", "shop_id", "product_reference", "total_value"])
         df['total_value'] = pd.to_numeric(df['total_value'], errors='coerce')
@@ -177,7 +177,7 @@ with tab3:
     st.subheader("Répartition par Taille")
     if filter_option == "Volume":
         # Pie chart for volume distribution by product
-        response = requests.get("http://127.0.0.1:5000/sellsbyproduct")
+        response = requests.get("https://techniquessimplon2-production.up.railway.app//sellsbyproduct")
         data = response.json()
         df_sells_by_product = pd.DataFrame(data, columns=["product_reference", "total_quantity"])
         st.write("Répartition du volume par produit")
@@ -185,7 +185,7 @@ with tab3:
         st.plotly_chart(fig)
         
         # Pie chart for volume distribution by shop
-        response = requests.get("http://127.0.0.1:5000/sellsbyshop")
+        response = requests.get("https://techniquessimplon2-production.up.railway.app//sellsbyshop")
         data = response.json()
         df_sells_by_shop = pd.DataFrame(data, columns=["town", "shop_id", "total_quantity"])
         st.write("Répartition du volume par magasin")
@@ -193,7 +193,7 @@ with tab3:
         st.plotly_chart(fig)
     else:
         # Pie chart for value distribution by product
-        response = requests.get("http://127.0.0.1:5000/sellsvaluebyproduct")
+        response = requests.get("https://techniquessimplon2-production.up.railway.app//sellsvaluebyproduct")
         data = response.json()
         df_sells_value_by_product = pd.DataFrame(data, columns=["product_reference", "total_value"])
         df_sells_value_by_product['total_value'] = pd.to_numeric(df_sells_value_by_product['total_value'], errors='coerce')
@@ -202,7 +202,7 @@ with tab3:
         st.plotly_chart(fig)
         
         # Pie chart for value distribution by shop
-        response = requests.get("http://127.0.0.1:5000/sellsvaluebyshop")
+        response = requests.get("https://techniquessimplon2-production.up.railway.app//sellsvaluebyshop")
         data = response.json()
         df_sells_value_by_shop = pd.DataFrame(data, columns=["town", "shop_id", "total_value"])
         df_sells_value_by_shop['total_value'] = pd.to_numeric(df_sells_value_by_shop['total_value'], errors='coerce')
